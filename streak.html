@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Contact Streak: Carolyn vs Cynthia</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #ff4500, #ff6347);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        .container {
+            z-index: 1;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 16px;
+            box-shadow: 0 0 25px rgba(255, 69, 0, 0.7);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            color: #f39c12;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 8px rgba(255, 165, 0, 0.7);
+        }
+
+        #streak {
+            font-size: 5rem;
+            color: #ffeb3b;
+            font-weight: bold;
+            text-shadow: 2px 2px 12px rgba(255, 69, 0, 0.9);
+        }
+
+        .button {
+            background-color: #ff6347;
+            color: white;
+            padding: 15px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .button:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        #challenge {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        #warning {
+            color: #e74c3c;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #leaderboard {
+            margin-top: 40px;
+            font-size: 1.5rem;
+            color: #f39c12;
+            font-weight: 600;
+            text-shadow: 2px 2px 8px rgba(255, 69, 0, 0.7);
+        }
+
+        .player-selection {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .player-btn {
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            background-color: #ff6347;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            color: white;
+        }
+
+        .player-btn:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>No Contact Streak</h1>
+        
+        <!-- Display current logged-in user's streak -->
+        <div id="streak">0 Days</div>
+
+        <div class="player-selection">
+            <button class="player-btn" onclick="increaseStreak()">Increase My Streak</button>
+        </div>
+
+        <button class="button" onclick="resetStreak()">I Messed Up...</button>
+
+        <p id="challenge"></p>
+        <p id="warning"></p>
+
+        <!-- Display both Carolyn's and Cynthia's streaks -->
+        <h2 id="leaderboard">Leaderboard: Carolyn: 0 Days | Cynthia: 0 Days</h2>
+    </div>
+
+    <script>
+        let username = localStorage.getItem("username");
+        let carolynStreak = localStorage.getItem("carolynStreak") || 0;
+        let cynthiaStreak = localStorage.getItem("cynthiaStreak") || 0;
+        let currentStreak;
+
+        // Display the correct streak for the logged-in user
+        if (username === "carolyn") {
+            currentStreak = carolynStreak;
+        } else if (username === "cynthia") {
+            currentStreak = cynthiaStreak;
+        }
+
+        document.getElementById("streak").innerText = `${currentStreak} Days`;
+
+        // Increase streak for the logged-in user
+        function increaseStreak() {
+            if (username === "carolyn") {
+                carolynStreak++;
+                localStorage.setItem("carolynStreak", carolynStreak);
+                document.getElementById("streak").innerText = `${carolynStreak} Days`;
+            } else if (username === "cynthia") {
+                cynthiaStreak++;
+                localStorage.setItem("cynthiaStreak", cynthiaStreak);
+                document.getElementById("streak").innerText = `${cynthiaStreak} Days`;
+            }
+            setNewChallenge();
+            updateLeaderboard();
+        }
+
+        // Reset streak for the logged-in user
+        function resetStreak() {
+            let confirmReset = confirm("Are you sure you want to break your streak?");
+            if (confirmReset) {
+                if (username === "carolyn") {
+                    carolynStreak = 0;
+                    localStorage.setItem("carolynStreak", carolynStreak);
+                    document.getElementById("streak").innerText = `0 Days`;
+                    document.getElementById("warning").innerText = "Carolyn is disappointed. Try again.";
+                } else if (username === "cynthia") {
+                    cynthiaStreak = 0;
+                    localStorage.setItem("cynthiaStreak", cynthiaStreak);
+                    document.getElementById("streak").innerText = `0 Days`;
+                    document.getElementById("warning").innerText = "Cynthia is disappointed. Try again.";
+                }
+            }
+            updateLeaderboard();
+        }
+
+        // Set a random challenge message
+        function setNewChallenge() {
+            const challenges = [
+                "Don’t even think about texting Russell. Stay strong!",
+                "Breaking your streak for Russell? Big regret.",
+                "Another day of victory. Don’t let Cynthia win!",
+                "You’ve come this far—don’t throw it away for a text!",
+                "Cynthia doesn’t deserve your attention. Stay focused!",
+                "Another day without texting? You’re unstoppable!",
+                "Cynthia would laugh if you broke your streak now!"
+            ];
+
+            let randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            document.getElementById("challenge").innerText = `Today's Challenge: ${randomChallenge}`;
+        }
+
+        // Update the leaderboard with both streaks
+        function updateLeaderboard() {
+            document.getElementById("leaderboard").innerText = `Leaderboard: Carolyn: ${carolynStreak} Days | Cynthia: ${cynthiaStreak} Days`;
+        }
+
+        setNewChallenge();
+    </script>
+
+</body>
+</html>
